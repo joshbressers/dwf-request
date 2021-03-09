@@ -17,11 +17,11 @@ $(document).ready(function(){
 Hello {{username}}
 </p>
 
-  <h2>DWF Request</h2>
+<h2>DWF Request</h2>
 
-<div class="container">
+<div class="container-fluid">
   <div class="row">
-  <div class="col-md-4">
+  <div class="col-6">
     <form action="/dwfform/formsubmit" name="requestDWF" method="post" class="input-append">
         <label for="vendorName">Vendor Name</label>
         <input type="text" class="form-control" data-toggle="tooltip" data-placement="left" title="The name of the vendor or project who release the software affected" name="vendorName" id="vendorName" placeholder="Vendor"/>
@@ -59,15 +59,10 @@ assign a candidate ID if you are not on the allowlist, usually in a few
 seconds. A human will be along shortly to approve the request and move it from
 a candidate to assigned.
 </p>
-<p>
-If you are interested in helping approve IDs, or anything at all really, this
-is a community project, please get in
-<a href="https://github.com/distributedweaknessfiling/DWF-workflow">touch</a>.
-</p>
       <button class="btn btn-primary" type="submit">Get an ID</button>
     </form>
   </div>
-  <div class="col-md-4">
+  <div class="col-6">
 <p>
 The description below is being generated based on your input values. Please
 try to make it make sense.
@@ -83,6 +78,12 @@ resulting in <span class="font-weight-bold" id="descImpact">[impact]</span>
   </div>
   </div>
 </div>
+
+<p>
+If you are interested in helping approve IDs, or anything at all really, this
+is a community project, please get in
+<a href="https://github.com/distributedweaknessfiling/DWF-workflow">touch</a>.
+</p>
 
 <script>
 // Wait for the DOM to be ready
