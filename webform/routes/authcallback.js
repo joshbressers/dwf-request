@@ -29,8 +29,12 @@ router.get('/', async function(req, res, next) {
 
 		resp = await axios.get(`https://api.github.com/user`, opts);
 
+		console.log(resp['data']);
+
 		const user_login = resp['data']['login'];
+		const user_id = resp['data']['id'];
 		req.session.github_login = user_login;
+		req.session.github_id = user_id;
 		res.redirect('/');
 	} catch(err) {
 		console.log(err)

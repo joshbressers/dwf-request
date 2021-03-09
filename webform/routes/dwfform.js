@@ -26,6 +26,8 @@ router.post('/formsubmit', function(req, res, next) {
 		res.redirect("/");
 	}
 
+	const the_github_id = req.session.github_id;
+
 	var refs = [];
 	if (Array.isArray(req.body.references)) {
 		refs = req.body.references;
@@ -45,6 +47,7 @@ router.post('/formsubmit', function(req, res, next) {
 		credit: req.body.credit,
 		references: refs,
 		reporter: the_username,
+		reporter_id: the_github_id,
 		notes: req.body.notes
 	};
 

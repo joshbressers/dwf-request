@@ -91,7 +91,8 @@ class Issue:
 
 	def get_reporter(self):
 		data = self.get_dwf_json()
-		return data['reporter']
+		the_reporter = "%s:%s" % (data['reporter'], data['reporter_id'])
+		return the_reporter
 
 	def get_dwf_json(self):
 		dwf_json = ""
