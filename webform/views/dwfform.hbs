@@ -40,10 +40,14 @@ Hello {{username}}
         <label for="credit">Discoverer/Credit</label>
         <input type="text" class="form-control" data-toggle="tooltip" data-placement="left" title="Who found this? Leave it blank if you don't know" name="credit" id="credit" placeholder="Credit"/>
         <input type="hidden" name="count" value="1" />
-        <label for="references">References</label>
-        <div id="refDiv1" class="form-check form-check-inline">
-          <input autocomplete="off" class="form-control"
-data-toggle="tooltip" title="A URL pointed at some important details" id="references1" name="references" type="text" placeholder="URL" /><button id="b1" class="btn add-more btn-success" type="button">Add</button>
+            <label for="references">References</label>
+        <div class="row no-gutters" id="refDiv1">
+          <div class="col-4">
+              <input autocomplete="off" class="form-control" data-toggle="tooltip" title="A URL pointed at some important details" id="references1" name="references" type="text" placeholder="URL" />
+          </div>
+          <div class="col-4">
+              <button id="b1" class="btn add-more btn-success" type="button">Add</button>
+          </div>
         </div>
         <div>
           <label for="notes">Notes</label>
@@ -135,15 +139,15 @@ $(document).ready(function(){
         var nextRef = "#references" + next;
         var newButton = "#b" + next;
 
-        var newDiv = '<div id="refDiv' + next + '" class="form-check form-check-inline">';
+        var newDiv = '<div id="refDiv' + next + '" class="row no-gutters"><div class="col-4">';
         // Now we add a textbox and a button to the div
-        newDiv = newDiv + '<input autocomplete="off" class="input form-control" id="references' + next + '" name="references" type="text"></div>';
-        var newButton = '<button id="b' + next + '" class="btn add-more btn-success" type="button">Add</button>';
+        newDiv = newDiv + '<input autocomplete="off" class="input form-control" id="references' + next + '" name="references" type="text"></div><div class="col-4"><button id="b' + next + '" class="btn add-more btn-success" type="button">Add</button></div></div>';
+        //var newButton = '<button id="b' + next + '" class="btn add-more btn-success" type="button">Add</button>';
 
         var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >Remove</button>';
         var removeButton = $(removeBtn);
         $(currentDiv).after(newDiv);
-        $(nextRef).after(newButton);
+        //$(nextRef).after(newButton);
         $(currentButton).after(removeBtn);
         $(currentButton).remove();
         $("#references" + next).attr('data-source',$(addto).attr('data-source'));
