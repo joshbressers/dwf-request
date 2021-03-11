@@ -46,7 +46,7 @@ Hello {{username}}
               <input autocomplete="off" class="form-control" data-toggle="tooltip" title="A URL pointed at some important details" id="references1" name="references" type="text" placeholder="URL" />
           </div>
           <div class="col-4">
-              <button id="b1" class="btn add-more btn-success" type="button">Add</button>
+              <button id="b1" style="width: 2em" class="2em btn add-more btn-success" type="button">+</button>
           </div>
         </div>
         <div>
@@ -141,10 +141,10 @@ $(document).ready(function(){
 
         var newDiv = '<div id="refDiv' + next + '" class="row no-gutters"><div class="col-4">';
         // Now we add a textbox and a button to the div
-        newDiv = newDiv + '<input autocomplete="off" class="input form-control" id="references' + next + '" name="references" type="text"></div><div class="col-4"><button id="b' + next + '" class="btn add-more btn-success" type="button">Add</button></div></div>';
-        //var newButton = '<button id="b' + next + '" class="btn add-more btn-success" type="button">Add</button>';
+        newDiv = newDiv + '<input autocomplete="off" class="input form-control" id="references' + next + '" name="references" type="text"></div><div class="col-4"><button id="b' + next + '" style="width: 2em" class="2em btn add-more btn-success" type="button">+</button></div></div>';
+        //var newButton = '<button id="b' + next + '" class="btn add-more //btn-success" type="button">+</button>';
 
-        var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >Remove</button>';
+        var removeBtn = '<button id="remove' + (next - 1) + '" style="width: 2em" class="2em btn btn-danger remove-me" >-</button>';
         var removeButton = $(removeBtn);
         $(currentDiv).after(newDiv);
         //$(nextRef).after(newButton);
