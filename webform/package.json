@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
-    "local": "DEBUG=dwf-form:* npm start"
+    "local": "DEBUG=dwf-form:* npm start",
+    "views-only": "DWF_VIEW_EDIT=true npm run devstart"
   },
   "dependencies": {
     "axios": "^0.21.1",
