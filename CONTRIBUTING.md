@@ -11,7 +11,7 @@ We actively welcome your pull requests.
 
 1) Fork the repo and create your branch from `main`.
 1) Optional: Add an upstream remote branch for easy fetching in the future
-  1) `git remote add upstream https://github.com/distributedweaknessfiling/dwf-request.git`
+    1) `git remote add upstream https://github.com/distributedweaknessfiling/dwf-request.git`
 1) Commit and push your changes to your branch
 1) Open a pull request against the DWF main branch
 
