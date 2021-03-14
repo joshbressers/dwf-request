@@ -24,34 +24,8 @@ from the client.
 There is also a bot that looks at issues in github and commits files to the DWF
 ID repo. The bot is written in python because async programming is hard.
 
-
-You must set these environment variables
-
-GH_TOKEN
-The token for authenticating the bot. The username is currently hard coded
-
-GH_CLIENT_ID
-The client ID for your project that will auth against github
-
-GH_OAUTH_SECRET
-The oauth secret you need for authentication (you get this at the same time
-you get the client ID
-
-SESSION_KEY
-The password for encrypting the session
-
-GH_USERNAME
-The username you will be connecting to github as
-
-GH_REPO
-The repo to act on. The DWF production repo is
-"distributedweaknessfiling/dwflist"
-
-GIT_ASKPASS
-Only set this for your dev system, the containers will take care of this
-for prod. You have to use the absolute path, for example on my system
-
-export GIT_ASKPASS=/home/bress/src/dwf-request/dwf-bot/helpers/git-askpass.py
+# Developing
+Please see the [DEVELOP.md](https://github.com/distributedweaknessfiling/dwf-request/blob/main/DEVELOP.md) document
 
 
 # Workflow
@@ -93,7 +67,7 @@ Please file issues about the tooling in the dwf-request repo: https://github.com
 
 ## Contesting/disputing a DWF CVE ID
 
-If you think a DWF CVE ID contains an error or isn't valid please file an issue in the dwflist repo: https://github.com/distributedweaknessfiling/dwflist/issues
+If you think a DWF CVE ID contains an error or isn't valid please file an issue in the [dwf-workflow](https://github.com/distributedweaknessfiling/dwf-workflow) repo.
 
 ## General discussion of DWF CVE IDs and the project
 
