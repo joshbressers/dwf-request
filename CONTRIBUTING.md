@@ -14,6 +14,9 @@ We actively welcome your pull requests.
     1) `git remote add upstream https://github.com/distributedweaknessfiling/dwf-request.git`
 1) Commit and push your changes to your branch
 1) Open a pull request against the DWF main branch
+1) Future changes to the dwf main branch can be pulled and merged by running
+    1) `git fetch upstream`
+    1) `git merge upstream/main`
 
 ## Issues
 We use GitHub issues to track public bugs. Please ensure your description is
