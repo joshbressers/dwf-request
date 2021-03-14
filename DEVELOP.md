@@ -7,26 +7,33 @@ The bot executes seperatly about every ten seconds
 
 You will need some environment variables to make this work
 
-GH_REPO
-The repo URL. This is the repo the bot and web form will be working with
-For example the prod repo is "distributedweaknessfiling/dwflist"
+You must set these environment variables
 
-GH_USERNAME
-The username you will auth against github with (this is dwfbot in prod)
+**GH_TOKEN**
+The token for authenticating against the GH_REPO. This is something you generate for yourself, there are instructions here
+https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
 
-GH_TOKEN
-This is a github token that is used to modify the repo
-(add instructions for generating this)
-
-GH_CLIENT_ID
-GH_OAUTH_SECRET
+**GH_CLIENT_ID
+GH_OAUTH_SECRET**
 The two above get you from github after creating an OAuth application
 Instructions to create this application can be found here
 https://docs.github.com/en/developers/apps/creating-an-oauth-app
 Your homepage URL can be http://localhost:3000 for local development
 
+**GIT_ASKPASS**
+Only set this for your dev system, the containers will take care of this
+for prod. You have to use the absolute path, for example on my system
 
-SESSION_KEY
+export GIT_ASKPASS=/home/bress/src/dwf-request/dwf-bot/helpers/git-askpass.py
+
+**GH_REPO**
+The repo name in github. This is the repo the bot and web form will be working with
+For example the prod repo is "distributedweaknessfiling/dwflist"
+
+**GH_USERNAME**
+The username you will auth against github with (this is dwfbot in prod)
+
+**SESSION_KEY**
 This can be literally anything. It's the key used to encrypt the session
 cookie.
 
