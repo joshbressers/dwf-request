@@ -21,7 +21,8 @@ This is a github token that is used to modify the repo
 GH_CLIENT_ID
 GH_OAUTH_SECRET
 The two above get you from github after creating an OAuth application
-(add instructions for doing that here)
+Instructions to create this application can be found here
+https://docs.github.com/en/developers/apps/creating-an-oauth-app
 
 
 SESSION_KEY

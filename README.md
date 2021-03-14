@@ -33,6 +33,10 @@ The token for authenticating the bot. The username is currently hard coded
 GH_CLIENT_ID
 The client ID for your project that will auth against github
 
+GH_OAUTH_SECRET
+The oauth secret you need for authentication (you get this at the same time
+you get the client ID
+
 SESSION_KEY
 The password for encrypting the session
 
