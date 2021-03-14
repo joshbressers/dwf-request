@@ -23,6 +23,7 @@ GH_OAUTH_SECRET
 The two above get you from github after creating an OAuth application
 Instructions to create this application can be found here
 https://docs.github.com/en/developers/apps/creating-an-oauth-app
+Your homepage URL can be http://localhost:3000 for local development
 
 
 SESSION_KEY
