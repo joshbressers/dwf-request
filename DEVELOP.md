@@ -29,3 +29,8 @@ Your homepage URL can be http://localhost:3000 for local development
 SESSION_KEY
 This can be literally anything. It's the key used to encrypt the session
 cookie.
+
+# webform
+
+The webform is a node.js app that uses express to serve all the content.
+For local development run it using `npm run local`
