@@ -3,6 +3,9 @@
 The form lives at https://iwantacve.org
 The bot executes seperatly about every ten seconds
 
+# How to contribute
+We have instructions in [CONTRIBUTING.md](https://github.com/distributedweaknessfiling/dwf-request/blob/main/CONTRIBUTING.md) on how to work with git and submit a pull request.
+
 # How to develop
 
 You will need some environment variables to make this work
