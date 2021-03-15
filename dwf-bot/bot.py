@@ -86,8 +86,8 @@ class Issue:
 			# I'm pretty sure we need better logic here
 			if i['event'] == 'labeled' and i['label']['name'] == 'approved':
 				approver = i['actor']['login']
-				return approver
-				
+				approver_id = i['actor']['id']
+				return "%s:%s" % (approver, approver_id)
 
 	def get_reporter(self):
 		data = self.get_dwf_json()
