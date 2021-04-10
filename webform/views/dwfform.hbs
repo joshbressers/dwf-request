@@ -71,13 +71,8 @@ a candidate to assigned.
 The description below is being generated based on your input values. Please
 try to make it make sense.
 </p>
-<p>
-In <span class="font-weight-bold" id="descVendorName">[Vendor Name]</span> <span class="font-weight-bold" id="descProductName">[Product Name]</span>
-version <span class="font-weight-bold" id="descProductVersion">[Affected
-Version]</span> a <span class="font-weight-bold" id="descVulnType">[Vulnerability Type]</span>
-exists in the <span class="font-weight-bold" id="descAffectedComponent">[Affected Component]</span> that can be attacked via
-<span class="font-weight-bold" id="descAttackVector">[Attack Vector]</span>
-resulting in <span class="font-weight-bold" id="descImpact">[impact]</span>
+<p id="descriptionParagraph">
+<span id="demoDescription"></span>
 </p>
 <p>
     <button id="edit_description" class="btn btn-success">Edit Description</button>
@@ -127,6 +122,9 @@ $(function() {
 });
 
 $(document).ready(function(){
+
+    $("#demoDescription").text(get_description());
+
     var next = 1;
     var click_function = function(e) {
         e.preventDefault();
@@ -173,37 +171,37 @@ $(document).ready(function(){
 
     $("#vendorName").on("input", function(){
         // Print entered value in a div box
-        $("#descVendorName").text($(this).val());
+        $("#demoDescription").text(get_description());
     });
 
     $("#productName").on("input", function(){
         // Print entered value in a div box
-        $("#descProductName").text($(this).val());
+        $("#demoDescription").text(get_description());
     });
 
     $("#productVersion").on("input", function(){
         // Print entered value in a div box
-        $("#descProductVersion").text($(this).val());
+        $("#demoDescription").text(get_description());
     });
 
     $("#vulnType").on("input", function(){
         // Print entered value in a div box
-        $("#descVulnType").text($(this).val());
+        $("#demoDescription").text(get_description());
     });
 
     $("#affectedComponent").on("input", function(){
         // Print entered value in a div box
-        $("#descAffectedComponent").text($(this).val());
+        $("#demoDescription").text(get_description());
     });
 
     $("#attackVector").on("input", function(){
         // Print entered value in a div box
-        $("#descAttackVector").text($(this).val());
+        $("#demoDescription").text(get_description());
     });
 
     $("#impact").on("input", function(){
         // Print entered value in a div box
-        $("#descImpact").text($(this).val());
+        $("#demoDescription").text(get_description());
     });
 
 
@@ -213,7 +211,7 @@ $(document).ready(function(){
 
         var the_desc = get_description();
 
-        $("#edit_description").after('<textarea class="form-control"t" id="description" name="description">' + the_desc + '</textarea>');
+        $("#descriptionParagraph").replaceWith('<textarea class="form-control"t" id="description" name="description">' + the_desc + '</textarea>');
         $("#edit_description").remove();
     });
 
