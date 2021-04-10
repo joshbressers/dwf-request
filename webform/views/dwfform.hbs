@@ -69,13 +69,12 @@ a candidate to assigned.
   <div class="col-6">
 <p>
 The description below is being generated based on your input values. Please
-try to make it make sense.
-</p>
-<p id="descriptionParagraph">
-<span id="demoDescription"></span>
+try to make it make sense. If you edit this box manually, it will stop
+updating based on the other values entered. Feel free to make any manual
+edits needed.
 </p>
 <p>
-    <button id="edit_description" class="btn btn-success">Edit Description</button>
+<textarea class="form-control" id="description" name="description"></textarea>
 </p>
   </div>
   </div>
@@ -123,7 +122,9 @@ $(function() {
 
 $(document).ready(function(){
 
-    $("#demoDescription").text(get_description());
+    window.description_edited = false;
+
+    $("#description").val(get_description());
 
     var next = 1;
     var click_function = function(e) {
@@ -170,52 +171,46 @@ $(document).ready(function(){
 
 
     $("#vendorName").on("input", function(){
-        // Print entered value in a div box
-        $("#demoDescription").text(get_description());
+        update_description();
     });
 
     $("#productName").on("input", function(){
-        // Print entered value in a div box
-        $("#demoDescription").text(get_description());
+        update_description();
     });
 
     $("#productVersion").on("input", function(){
-        // Print entered value in a div box
-        $("#demoDescription").text(get_description());
+        update_description();
     });
 
     $("#vulnType").on("input", function(){
-        // Print entered value in a div box
-        $("#demoDescription").text(get_description());
+        update_description();
     });
 
     $("#affectedComponent").on("input", function(){
-        // Print entered value in a div box
-        $("#demoDescription").text(get_description());
+        update_description();
     });
 
     $("#attackVector").on("input", function(){
-        // Print entered value in a div box
-        $("#demoDescription").text(get_description());
+        update_description();
     });
 
     $("#impact").on("input", function(){
-        // Print entered value in a div box
-        $("#demoDescription").text(get_description());
+        update_description();
     });
 
-
-    // Add the Edit Description button logic
-
-    $("#edit_description").click(function(e) {
-
-        var the_desc = get_description();
-
-        $("#descriptionParagraph").replaceWith('<textarea class="form-control"t" id="description" name="description">' + the_desc + '</textarea>');
-        $("#edit_description").remove();
+    $("#description").on("input", function(){
+        // Print entered value in a div box
+        window.description_edited = true;
     });
 
 });
+
+function update_description() {
+    if (window.description_edited == false) {
+        $("#description").val(get_description());
+    }
+}
+
 
 function get_description() {
     // There are clever ways to do this, I'm doing it simple to avoid
