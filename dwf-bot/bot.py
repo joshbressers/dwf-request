@@ -332,36 +332,17 @@ class DWFRepo:
 
 		return (the_dwf, dwf_path)
 
-	def generate_description(self, issue_data):
-
-		#In [vendor name] [product name] version [version info] a
-		#[vulnerability type] exists in the [affected component] that can be
-		#attacked via [attack vector] resulting in [impact of exploitation].
-
-		# In [vendor name]
-		the_string = "In " + issue_data["vendor_name"] + " "
-		# [product name] version
-		the_string = the_string + issue_data["product_name"] + " version "
-		# [version info] a
-		the_string = the_string + issue_data["product_version"] + " a "
-		# [vulnerability type] exists in the
-		the_string = the_string + issue_data["vulnerability_type"] + " exists in the "
-		# [affected component] that can be attacked via
-		the_string = the_string + issue_data["affected_component"] + " that can be attacked via "
-		# [attack vector] resulting in
-		the_string = the_string + issue_data["attack_vector"] + " resulting in "
-		# [impact of exploitation].
-		#                         ^ Don't forget the punctuation
-		the_string = the_string + issue_data["impact"] + "."
-
-		return the_string;
-
 	def get_dwf_json_format(self, dwf_id, issue_data):
 
 		# This data format is beyond terrible. Apologies if you found this. I am ashamed for the author of it.
 		# We will fix it someday, but not today. The initial goal is to be compatible
 
 		c = {};
+
+		# DWF namespace. We want this at the top because it's easy to read
+		# If there is any new data to add, do it here. The previous fields should be treated as legacy
+		c["dwf"] = issue_data
+
 
 		# metadata
 			# Or CAN
@@ -417,11 +398,7 @@ class DWFRepo:
 		c["description"]["description_data"] = []
 		c["description"]["description_data"].append({})
 		c["description"]["description_data"][0]["lang"] = "eng"
-		c["description"]["description_data"][0]["value"] = self.generate_description(issue_data)
-
-		# DWF namespace
-		# If there is any new data to add, do it here. The previous fields should be treated as legacy
-		c["dwf"] = issue_data
+		c["description"]["description_data"][0]["value"] = issue_data["description"]
 
 		return c
 

@@ -55,7 +55,7 @@ Hello {{username}}
         </div>
 
 <p>
-When you hit this button, a public github issue will be opened in the
+When you hit this button, a public GitHub issue will be opened in the
 <a href="https://github.com/distributedweaknessfiling/dwflist">dwflist</a>
 repo that contains your username and everything in these fields. If there is
 any information you you want to keep private do not submit it. A bot will then
@@ -63,21 +63,22 @@ assign a candidate ID if you are not on the allowlist, usually in a few
 seconds. A human will be along shortly to approve the request and move it from
 a candidate to assigned.
 </p>
+<p>
+Soemtimes GitHub will return a 404 when trying to redirect you. If you
+reload the GitHub URL it'll go the right place. We're just a bit too quick
+on the redirect sometimes.
+</p>
       <button class="btn btn-primary" type="submit">Get an ID</button>
-    </form>
   </div>
   <div class="col-6">
 <p>
 The description below is being generated based on your input values. Please
-try to make it make sense.
+try to make it make sense. If you edit this box manually, it will stop
+updating based on the other values entered. Feel free to make any manual
+edits needed.
 </p>
 <p>
-In <span class="font-weight-bold" id="descVendorName">[Vendor Name]</span> <span class="font-weight-bold" id="descProductName">[Product Name]</span>
-version <span class="font-weight-bold" id="descProductVersion">[Affected
-Version]</span> a <span class="font-weight-bold" id="descVulnType">[Vulnerability Type]</span>
-exists in the <span class="font-weight-bold" id="descAffectedComponent">[Affected Component]</span> that can be attacked via
-<span class="font-weight-bold" id="descAttackVector">[Attack Vector]</span>
-resulting in <span class="font-weight-bold" id="descImpact">[impact]</span>
+<textarea class="form-control" id="description" name="description"></textarea>
 </p>
   </div>
   </div>
@@ -88,6 +89,7 @@ If you are interested in helping approve IDs, or anything at all really, this
 is a community project, please get in
 <a href="https://github.com/distributedweaknessfiling/DWF-workflow">touch</a>.
 </p>
+    </form>
 
 <script>
 // Wait for the DOM to be ready
@@ -124,6 +126,11 @@ $(function() {
 });
 
 $(document).ready(function(){
+
+    window.description_edited = false;
+
+    $("#description").val(get_description());
+
     var next = 1;
     var click_function = function(e) {
         e.preventDefault();
@@ -169,40 +176,89 @@ $(document).ready(function(){
 
 
     $("#vendorName").on("input", function(){
-        // Print entered value in a div box
-        $("#descVendorName").text($(this).val());
+        update_description();
     });
 
     $("#productName").on("input", function(){
-        // Print entered value in a div box
-        $("#descProductName").text($(this).val());
+        update_description();
     });
 
     $("#productVersion").on("input", function(){
-        // Print entered value in a div box
-        $("#descProductVersion").text($(this).val());
+        update_description();
     });
 
     $("#vulnType").on("input", function(){
-        // Print entered value in a div box
-        $("#descVulnType").text($(this).val());
+        update_description();
     });
 
     $("#affectedComponent").on("input", function(){
-        // Print entered value in a div box
-        $("#descAffectedComponent").text($(this).val());
+        update_description();
     });
 
     $("#attackVector").on("input", function(){
-        // Print entered value in a div box
-        $("#descAttackVector").text($(this).val());
+        update_description();
     });
 
     $("#impact").on("input", function(){
+        update_description();
+    });
+
+    $("#description").on("input", function(){
         // Print entered value in a div box
-        $("#descImpact").text($(this).val());
+        window.description_edited = true;
     });
 
 });
+
+function update_description() {
+    if (window.description_edited == false) {
+        $("#description").val(get_description());
+    }
+}
+
+
+function get_description() {
+    // There are clever ways to do this, I'm doing it simple to avoid
+    // making it difficult to read
+    var vendor_name = '[VENDOR NAME]';
+    var product_name = '[PRODUCT NAME]';
+    var product_version = '[PRODUCT VERSION]';
+    var vuln_type = '[VULNERABILITY TYPE]';
+    var affected_component = '[AFFECTED COMPONENT]';
+    var attack_vector = '[ATTACK VECTOR]';
+    var impact = '[IMPACT]';
+
+    if ($("#vendorName").val()) {
+        vendor_name = $("#vendorName").val();
+    }
+
+    if ($("#productName").val()) {
+        product_name = $("#productName").val();
+    }
+
+    if ($("#productVersion").val()) {
+        product_version = $("#productVersion").val();
+    }
+
+    if ($("#vulnType").val()) {
+        vuln_type = $("#vulnType").val();
+    }
+
+    if ($("#affectedComponent").val()) {
+        affected_component = $("#affectedComponent").val();
+    }
+
+    if ($("#attackVector").val()) {
+        attack_vector = $("#attackVector").val();
+    }
+
+    if ($("#impact").val()) {
+        impact = $("#impact").val();
+    }
+
+    var the_desc = `In ${vendor_name} ${product_name} version ${product_version} a ${vuln_type} exists in the ${affected_component} that can be attacked via ${attack_vector} resulting in ${impact}`;
+
+    return the_desc;
+}
 
 </script>
