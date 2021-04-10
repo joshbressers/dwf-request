@@ -53,7 +53,8 @@ router.post('/formsubmit', function(req, res, next) {
 			references: refs,
 			reporter: the_username,
 			reporter_id: the_github_id,
-			notes: req.body.notes
+			notes: req.body.notes,
+			description: req.body.description
 		};
 
 		dwf_json = JSON.stringify(dwf_data, null, 2);
