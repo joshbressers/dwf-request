@@ -79,6 +79,9 @@ exists in the <span class="font-weight-bold" id="descAffectedComponent">[Affecte
 <span class="font-weight-bold" id="descAttackVector">[Attack Vector]</span>
 resulting in <span class="font-weight-bold" id="descImpact">[impact]</span>
 </p>
+<p>
+    <button id="edit_description" class="btn btn-success">Edit Description</button>
+</p>
   </div>
   </div>
 </div>
@@ -203,6 +206,61 @@ $(document).ready(function(){
         $("#descImpact").text($(this).val());
     });
 
+
+    // Add the Edit Description button logic
+
+    $("#edit_description").click(function(e) {
+
+        var the_desc = get_description();
+
+        $("#edit_description").after('<textarea class="form-control"t" id="description" name="description">' + the_desc + '</textarea>');
+        $("#edit_description").remove();
+    });
+
 });
+
+function get_description() {
+    // There are clever ways to do this, I'm doing it simple to avoid
+    // making it difficult to read
+    var vendor_name = '[VENDOR NAME]';
+    var product_name = '[PRODUCT NAME]';
+    var product_version = '[PRODUCT VERSION]';
+    var vuln_type = '[VULNERABILITY TYPE]';
+    var affected_component = '[AFFECTED COMPONENT]';
+    var attack_vector = '[ATTACK VECTOR]';
+    var impact = '[IMPACT]';
+
+    if ($("#vendorName").val()) {
+        vendor_name = $("#vendorName").val();
+    }
+
+    if ($("#productName").val()) {
+        product_name = $("#productName").val();
+    }
+
+    if ($("#productVersion").val()) {
+        product_version = $("#productVersion").val();
+    }
+
+    if ($("#vulnType").val()) {
+        vuln_type = $("#vulnType").val();
+    }
+
+    if ($("#affectedComponent").val()) {
+        affected_component = $("#affectedComponent").val();
+    }
+
+    if ($("#attackVector").val()) {
+        attack_vector = $("#attackVector").val();
+    }
+
+    if ($("#impact").val()) {
+        impact = $("#impact").val();
+    }
+
+    var the_desc = `In ${vendor_name} ${product_name} version ${product_version} a ${vuln_type} exists in the ${affected_component} that can be attacked via ${attack_vector} resulting in ${impact}`;
+
+    return the_desc;
+}
 
 </script>
