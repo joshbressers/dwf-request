@@ -6,8 +6,9 @@ import json
 import datetime
 
 class DWFRepo:
-	def __init__(self, repo_url):
+	def __init__(self, repo_url, testing=False):
 
+		self.testing = testing
 		self.tmpdir = tempfile.TemporaryDirectory()
 		self.repo = git.Repo.clone_from(repo_url, self.tmpdir.name)
 		allow_list_files = os.path.join(self.tmpdir.name, "allowlist.json")
@@ -53,6 +54,7 @@ class DWFRepo:
 		self.repo.index.add(can_file)
 		self.repo.index.commit("Promoted to %s for #%s" % (dwf_id, dwf_issue.id))
 		self.push()
+		return dwf_id
 
 	def add_dwf(self, dwf_issue):
 
@@ -79,7 +81,11 @@ class DWFRepo:
 		return dwf_id
 
 	def push(self):
-		self.repo.remotes.origin.push()
+		# Don't push if we're testing
+		if self.testing:
+			pass
+		else:
+			self.repo.remotes.origin.push()
 
 	def close(self):
 		self.tmpdir.cleanup()
