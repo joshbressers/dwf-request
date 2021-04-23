@@ -32,8 +32,8 @@ def main():
 				print("Found an ID in the title for issue %s" % i.id)
 				continue
 
-			if (i.creator != username):
-				print("Issue %s is not created by %s" % (i.id, username))
+			if not dwf_repo.approved_user(user_name=i.creator, user_id=i.creator_id):
+				print("Issue %s is not created by an approved user" % (i.id))
 				continue
 
 			print("Updating issue %s" % i.id)

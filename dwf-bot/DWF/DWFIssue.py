@@ -15,6 +15,7 @@ class Issue:
 		self.title = details['title']
 		self.id = details['number'];	
 		self.creator = details['user']['login']
+		self.creator_id = details['user']['id']
 		self.auth = (os.environ['GH_USERNAME'], os.environ['GH_TOKEN'])
 
 	def get_dwf_id(self):

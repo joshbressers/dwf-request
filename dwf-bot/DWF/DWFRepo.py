@@ -15,7 +15,9 @@ class DWFRepo:
 		with open(allow_list_files) as json_file:
 			self.allowed_users = json.loads(json_file.read())
 
-	def approved_user(self, user):
+	def approved_user(self, user='', user_name=None, user_id=None):
+		if user_name is not None and user_id is not None:
+			user="%s:%s" % (user_name, user_id)
 		return user in self.allowed_users
 
 	def can_to_dwf(self, dwf_issue):
