@@ -1,3 +1,8 @@
+/**
+ * For this to work add a route like:
+ * json.distributedweaknessfiling.org/*	polished-pine-1b7e
+ */
+
 const base = "https://raw.githubusercontent.com/distributedweaknessfiling/dwflist/main/"
 const statusCode = 301
 
