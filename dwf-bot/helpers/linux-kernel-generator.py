@@ -7,11 +7,22 @@ import requests
 import os
 import re
 import sys
+import logging
+import time
+
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 def main():
     # TODO: Use a getopt library
     git_cache = sys.argv[1]
     repo = git.Repo(git_cache)
+
+    logging.basicConfig(level=logging.INFO)
+
+    s = requests.Session()
+    retries = Retry(total=5, backoff_factor=1)
+    s.mount('https://', HTTPAdapter(max_retries=retries))
 
     # This data looks like introduced,version,fixed,version
     for i in sys.stdin.readlines():
@@ -65,6 +76,18 @@ def main():
                 f"https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id={introduced_hash}",
                 f"https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id={fixed_hash}"
             ],
+            "extended_references": [
+                {
+                    "type": "commit",
+                    "value": f"{introduced_hash}",
+                    "note": "introduced"
+                },
+                {
+                    "type": "commit",
+                    "value": f"{fixed_hash}",
+                    "note": "fixed"
+                }
+            ],
             "reporter": "joshbressers",
             "reporter_id": 1692786,
             "notes": "",
@@ -81,14 +104,25 @@ def main():
             "body": f"```\n--- DWF JSON ---\n{json_output}\n--- DWF JSON ---\n```",
             "labels": ["new", "check"]
         }
-        headers = { "accept": "application/json" }
+        headers = {
+                "accept": "application/json",
+                "User-Agent": "request"
+        }
 
-        resp = requests.post(f"https://api.github.com/repos/{github_repo}/issues",
+        resp = s.post(f"https://api.github.com/repos/{github_repo}/issues",
     json=body, auth=auth, headers=headers)
-        resp.raise_for_status()
+        try:
+            resp.raise_for_status()
+        except:
+            print(resp)
+            print(resp.text)
+            exit(1)
 
         issue_id = resp.json()["number"]
         print(f"Filed issue #{issue_id}")
+
+        # If we don't slow down, we hit the rate limit
+        time.sleep(5)
 
 if __name__ == "__main__":
 	main()
