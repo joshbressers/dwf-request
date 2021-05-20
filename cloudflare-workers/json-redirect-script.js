@@ -11,15 +11,16 @@ async function handleRequest(request) {
   const { pathname } = url
 
 /**
+ * DWF CVE
  * pathname MUST equal CVE-NNNN-1NNNNNN
  * 2021/1000xxx/CVE-2021-1000011.json
  * NNNN/1NNNxxx/CVE-NNNN-1NNNNNN.json
  * https://raw.githubusercontent.com/distributedweaknessfiling/dwflist/main/2021/1000xxx/CVE-2021-1000010.json
  */
 
-  const IDExtRegExp = new RegExp(/(CVE-[0-9][0-9][0-9][0-9]-1[0-9][0-9][0-9][0-9][0-9][0-9])$/)
+  const DWFCVEIDExtRegExp = new RegExp(/(CVE-[0-9][0-9][0-9][0-9]-1[0-9][0-9][0-9][0-9][0-9][0-9])$/)
 
-  if (IDExtRegExp.test(pathname)) {
+  if (DWFCVEIDExtRegExp.test(pathname)) {
     var IDData = pathname.split("-")
     var DirRegExp = new RegExp(/([0-9][0-9][0-9])$/)
     var dirName = IDData[2].replace(DirRegExp, "xxx");
@@ -31,6 +32,15 @@ async function handleRequest(request) {
     return new Response("UNKNOWN DATA please use CVE-NNNN-1NNNNNN", { status: 404 })
   }
 }
+
+/**
+ * Legacy CVE
+ * pathname MUST equal CVE-NNNN-NNNN/NNNNN/NNNNNN
+ * Replace the trailing 3 digits with xxx to find the directory
+ * 2021/1xxx/CVE-2021-1011.json
+ * NNNN/1NNNxxx/CVE-NNNN-1NNNNNN.json
+ * https://raw.githubusercontent.com/distributedweaknessfiling/securitylist/main/2021/1000xxx/CVE-2021-1000010.json
+ */
 
 addEventListener("fetch", async event => {
   event.respondWith(handleRequest(event.request))
