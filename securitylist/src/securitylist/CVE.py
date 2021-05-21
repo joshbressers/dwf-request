@@ -29,7 +29,7 @@ class CVE:
         filename = self.get_filename(create=True)
 
         with open(filename, 'w') as fh:
-            fh.write(json.dumps(self.json))
+            fh.write(json.dumps(self.json, sort_keys=True, indent=4))
 
     def get_filename(self, create=False):
 
