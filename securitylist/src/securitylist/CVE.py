@@ -8,15 +8,20 @@ from pathlib import Path
 class CVE:
     path = None
 
-    def __init__(self, cve_id, the_json=None):
+    def __init__(self, cve_id):
         self.id = cve_id
 
-        if the_json is None:
-            # We need to read in the json
+        if os.path.exists(self.get_filename()):
+            # Read the file
             with open(self.get_filename()) as fh:
                 self.json = json.load(fh)
         else:
-            self.json = the_json
+            self.json = {}
+
+    def add_data(self, namespace, data):
+        # Add data to a namespace
+
+        self.json[namespace] = data
 
     def write(self):
         # Write the CVE content to a file

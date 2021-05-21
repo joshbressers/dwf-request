@@ -25,7 +25,8 @@ def main():
     for i in nvd:
         the_id = i['cve']['CVE_data_meta']['ID']
         # We need to put these in the NVD namespace
-        c = securitylist.CVE(the_id, {"NVD": i})
+        c = securitylist.CVE(the_id)
+        c.add_data('NVD', i)
         c.write()
 
     # We need to store the end time for future use
