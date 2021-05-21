@@ -49,4 +49,20 @@ class TestNVD(unittest.TestCase):
         nvd = securitylist.NVD()
         nvd.get_range(None, None)
 
-        self.assertEqual(nvd.total, 20)
+        self.assertEqual(nvd.total, 40)
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_iterate(self, mock_get):
+
+        timestamp = datetime.datetime.now()
+
+        nvd = securitylist.NVD()
+        nvd.get_range(None, None)
+
+        self.assertEqual(nvd.total, 40)
+
+        count = 0
+        for i in nvd:
+            count = count + 1
+
+        self.assertEqual(count, 40)

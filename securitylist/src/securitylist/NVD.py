@@ -12,6 +12,9 @@ class NVD:
     def __init__(self):
         self.now = datetime.datetime.utcnow()
         self.total = 0
+        self.index = 0
+        self.nvd_url = "https://services.nvd.nist.gov/rest/json/cve/1.0"
+        self.payload = {}
 
     def __get_time__(self, ts):
         # Return the time format the API wants
@@ -33,17 +36,47 @@ class NVD:
         if end is None:
             self.end_time = self.__get_time__(self.now)
 
-        nvd_url = "https://services.nvd.nist.gov/rest/json/cve/1.0"
+        self.get_page(0)
 
-        payload = {
-            "startIndex": 0,
+        self.total = self.data["totalResults"]
+        self.page_size = self.data["resultsPerPage"]
+        self.page = 0
+
+    def get_page(self, page):
+
+        if page > 0:
+            self.index = self.page_size * page
+        else:
+            self.index = 0
+
+        self.payload = {
+            "startIndex": self.index,
             "resultsPerPage": 5000,
             "modStartDate": self.start_time,
             "modEndDate": self.end_time
         }
 
-        response = requests.get(nvd_url, params=payload)
+        response = requests.get(self.nvd_url, params=self.payload)
         response.raise_for_status()
         self.data = response.json()
 
-        self.total = self.data["totalResults"]
+    def __iter__(self):
+        self.iter_n = 0
+        self.iter_current = 0
+        return self
+
+    def __next__(self):
+
+        if self.iter_n == self.total:
+                raise StopIteration
+
+        if self.iter_current == len(self.data["result"]["CVE_Items"]):
+            # Time to paginate
+            self.iter_current = 0
+            self.page = self.page + 1
+            self.get_page(self.page)
+
+        to_return = self.data["result"]["CVE_Items"][self.iter_current]
+        self.iter_n = self.iter_n + 1
+        self.iter_current = self.iter_current + 1
+        return to_return
