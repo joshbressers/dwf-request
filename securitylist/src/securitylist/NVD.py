@@ -3,6 +3,7 @@
 
 import requests
 import datetime
+import time
 
 class UnexpectedResults(Exception):
     pass
@@ -13,8 +14,9 @@ class NVD:
         self.now = datetime.datetime.utcnow()
         self.total = 0
         self.index = 0
-        self.nvd_url = "https://services.nvd.nist.gov/rest/json/cve/1.0"
+        self.nvd_url = "https://services.nvd.nist.gov/rest/json/cves/1.0"
         self.payload = {}
+        self.last_update = datetime.datetime.utcnow()
 
     def __get_time__(self, ts):
         # Return the time format the API wants
@@ -32,9 +34,13 @@ class NVD:
 
         if start is None:
             self.start_time = '1990-01-01T00:00:00:000 UTC-00:00'
+        else:
+            self.start_time = start
 
         if end is None:
             self.end_time = self.__get_time__(self.now)
+        else:
+            self.end_time = end
 
         self.get_page(0)
 
@@ -44,6 +50,10 @@ class NVD:
 
     def get_page(self, page):
 
+        # We don't want to hit this API any faster than once every second
+        if (datetime.datetime.utcnow() - self.last_update).seconds < 1:
+            time.sleep(1)
+
         if page > 0:
             self.index = self.page_size * page
         else:
@@ -51,7 +61,7 @@ class NVD:
 
         self.payload = {
             "startIndex": self.index,
-            "resultsPerPage": 5000,
+            "resultsPerPage": 500,
             "modStartDate": self.start_time,
             "modEndDate": self.end_time
         }
