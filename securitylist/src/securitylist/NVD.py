@@ -50,9 +50,9 @@ class NVD:
 
     def get_page(self, page):
 
-        # We don't want to hit this API any faster than once every second
-        if (datetime.datetime.utcnow() - self.last_update).seconds < 1:
-            time.sleep(1)
+        # We don't want to hit this API too fast
+        if (datetime.datetime.utcnow() - self.last_update).seconds < 5:
+            time.sleep(4)
 
         if page > 0:
             self.index = self.page_size * page
