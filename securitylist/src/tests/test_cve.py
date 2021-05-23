@@ -10,6 +10,8 @@ import securitylist
 import tempfile
 import os
 import json
+import pathlib
+import time
 
 class TestCVE(unittest.TestCase):
 
@@ -51,6 +53,33 @@ class TestCVE(unittest.TestCase):
 
         # check path for file
         self.assertTrue(os.path.exists(c.get_filename()))
+
+    def test_change(self):
+        the_id = self.one_id['cve']['CVE_data_meta']['ID']
+        c = securitylist.CVE(the_id)
+        c.add_data('TEST', self.one_id)
+        c.write()
+
+        old_data = c.json
+
+        filename = pathlib.Path(c.get_filename())
+        modified_time = filename.stat().st_mtime
+
+        # Sometimes we go too fast and the mtimes are the same
+        time.sleep(1)
+
+        the_id = self.one_id['cve']['CVE_data_meta']['ID']
+        c = securitylist.CVE(the_id)
+        c.add_data('TEST', self.one_id)
+        c.write()
+
+        new_data = c.json
+
+        filename = pathlib.Path(c.get_filename())
+        new_modified_time = filename.stat().st_mtime
+
+        self.assertEqual(old_data, new_data)
+        self.assertEqual(modified_time, new_modified_time)
 
     def test_update(self):
         pass
