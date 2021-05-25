@@ -24,7 +24,8 @@ class CVE:
         self.json[namespace] = data
 
     def write(self):
-        # Write the CVE content to a file
+        # Write the CVE content to a file. Returns true if the contents
+        # changed and were updated
 
         filename = self.get_filename(create=True)
 
@@ -42,6 +43,8 @@ class CVE:
         if old_data != new_data:
             with open(filename, 'w') as fh:
                 fh.write(json.dumps(self.json, sort_keys=True, indent=4))
+            return True
+        return False
 
     def get_filename(self, create=False):
 

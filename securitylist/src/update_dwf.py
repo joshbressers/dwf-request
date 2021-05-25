@@ -32,14 +32,14 @@ def main():
 
     for f in dwf_files:
         with open(f) as fh:
-            print(f)
             dwf_data = json.load(fh)
 
             the_id = dwf_data['CVE_data_meta']['ID']
             # We need to put these in the NVD namespace
             c = securitylist.CVE(the_id)
             c.add_data(namespace, dwf_data)
-            c.write()
+            if c.write():
+                print(f)
 
 if __name__ == "__main__":
     main()
