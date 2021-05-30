@@ -140,7 +140,79 @@ class DWFRepo:
 
 		return (the_dwf, dwf_path)
 
+	def get_osv_json_format(self, dwf_id, issue_data):
+
+		# The OSV format is nice. Find out more here
+		# https://osv.dev/docs/#tag/vulnerability_schema
+		the_time =  datetime.datetime.utcnow().isoformat() + "Z"
+
+		c = {};
+
+		c["id"] = dwf_id
+		c["summary"] = issue_data["description"]
+		c["package"] = {
+			"name": issue_data["product_name"],
+			"ecosystem": "DWF"
+		}
+
+		# XXX: This needs to be done in a better way long term
+		if issue_data["product_name"] == "Kernel" and \
+		   issue_data["vendor_name"] == "Linux" and \
+		   issue_data["impact"] == "unspecified":
+
+			# We are dealing with the kernel, skip references and use git
+			# commits in the affected section
+
+			c["affects"] = {
+				"ranges": [
+					{
+						"type": "GIT",
+						"repo": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/"
+					}
+				]
+			}
+
+			# Find the kernel fixed and introduced fields
+			for i in issue_data["extended_references"]:
+				if i["type"] != "commit":
+					# XXX We need some exceptions
+					raise Exception("Unknown kernel reference")
+
+				if i["note"] == "introduced":
+					c["affects"]["ranges"][0]["introduced"] = i["value"]
+				elif i["note"] == "fixed":
+					c["affects"]["ranges"][0]["fixed"] = i["value"]
+				else:
+					raise Exception("Unknown kernel note")
+
+		else:
+			# We're not looking at kernel issues
+			c["affects"] = {
+				"versions": [
+					issue_data["product_version"]
+				]
+			}
+			c["references"] = []
+			for i in issue_data["references"]:
+				c["references"].append({"type": "WEB", "url": i})
+
+		c["modified"] = the_time
+		c["published"] = the_time
+
+		return c
+
 	def get_dwf_json_format(self, dwf_id, issue_data):
+
+		# We made a mistake of not properly namespacing this at the
+		# beginning. It will be fixed someday
+		c = {}
+		c["dwf"] = issue_data
+		c.update(self.get_mitre_json_format(dwf_id, issue_data))
+		# Consider this the first proper namespace
+		c["OSV"] = self.get_osv_json_format(dwf_id, issue_data)
+		return c
+
+	def get_mitre_json_format(self, dwf_id, issue_data):
 
 		# This data format is beyond terrible. Apologies if you found this. I am ashamed for the author of it.
 		# We will fix it someday, but not today. The initial goal is to be compatible
@@ -149,7 +221,6 @@ class DWFRepo:
 
 		# DWF namespace. We want this at the top because it's easy to read
 		# If there is any new data to add, do it here. The previous fields should be treated as legacy
-		c["dwf"] = issue_data
 
 
 		# metadata
