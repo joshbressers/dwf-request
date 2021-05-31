@@ -20,6 +20,21 @@ class DWFRepo:
 			user="%s:%s" % (user_name, user_id)
 		return user in self.allowed_users
 
+	def update_id(self, the_id, the_data):
+
+		# If we get a CAN, we want a CVE filename
+		if 'CAN' in the_id:
+			the_id = the_id.replace("CAN", "CVE")
+
+		the_filename = self.get_file(the_id)
+
+		dwf_json = json.dumps(the_data, indent=2)
+		dwf_json = dwf_json + "\n"
+		# save the json
+		with open(the_filename, 'w') as json_file:
+			json_file.write(dwf_json)
+		self.repo.index.add(the_filename)
+
 	def can_to_dwf(self, dwf_issue):
 
 		can_id = dwf_issue.get_dwf_id()
@@ -45,18 +60,19 @@ class DWFRepo:
 		# Swap the CAN to CVE
 		can_data['data_type'] = 'CVE'
 		can_data['CVE_data_meta']['ID'] = dwf_id
+		can_data['OSV']['id'] = dwf_id
 
-		dwf_json = json.dumps(can_data, indent=2)
-		dwf_json = dwf_json + "\n"
 		# save the json
-		with open(git_file, 'w') as json_file:
-			json_file.write(dwf_json)
+		self.update_id(dwf_id, can_data)
 
 		# Commit the file
 		self.repo.index.add(can_file)
 		self.repo.index.commit("Promoted to %s for #%s" % (dwf_id, dwf_issue.id))
 		self.push()
 		return dwf_id
+
+	def commit(self, message):
+		self.repo.index.commit(message)
 
 	def add_dwf(self, dwf_issue):
 
@@ -91,6 +107,34 @@ class DWFRepo:
 
 	def close(self):
 		self.tmpdir.cleanup()
+
+	def get_id(self, the_id):
+		the_data = None
+		id_path = self.get_file(the_id)
+		with open(id_path) as fh:
+			the_data = json.load(fh)
+		return the_data
+
+	def get_file(self, the_id):
+		(year, id_only) = the_id.split('-')[1:3]
+		block_num = int(int(id_only)/1000)
+		block_path = "%dxxx" % block_num
+		id_path = os.path.join(self.tmpdir.name, year, block_path, the_id + ".json")
+		return id_path
+
+	def get_all_ids(self):
+
+		dwf_ids = []
+		for root,d_names,f_names in os.walk(self.tmpdir.name):
+			# Skip the .git directories
+			if '.git' in root:
+				continue
+
+			for i in f_names:
+				if 'CVE-' in i:
+					id_only = i.split('.')[0]
+					dwf_ids.append(id_only)
+		return dwf_ids
 
 	def get_next_dwf_path(self, approved_user = False):
 		# Returns the next DWF ID and the path where it should go
@@ -140,7 +184,79 @@ class DWFRepo:
 
 		return (the_dwf, dwf_path)
 
+	def get_osv_json_format(self, dwf_id, issue_data):
+
+		# The OSV format is nice. Find out more here
+		# https://osv.dev/docs/#tag/vulnerability_schema
+		the_time =  datetime.datetime.utcnow().isoformat() + "Z"
+
+		c = {};
+
+		c["id"] = dwf_id
+		c["summary"] = issue_data["description"]
+		c["package"] = {
+			"name": issue_data["product_name"],
+			"ecosystem": "DWF"
+		}
+
+		# XXX: This needs to be done in a better way long term
+		if issue_data["product_name"] == "Kernel" and \
+		   issue_data["vendor_name"] == "Linux" and \
+		   issue_data["impact"] == "unspecified":
+
+			# We are dealing with the kernel, skip references and use git
+			# commits in the affected section
+
+			c["affects"] = {
+				"ranges": [
+					{
+						"type": "GIT",
+						"repo": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/"
+					}
+				]
+			}
+
+			# Find the kernel fixed and introduced fields
+			for i in issue_data["extended_references"]:
+				if i["type"] != "commit":
+					# XXX We need some exceptions
+					raise Exception("Unknown kernel reference")
+
+				if i["note"] == "introduced":
+					c["affects"]["ranges"][0]["introduced"] = i["value"]
+				elif i["note"] == "fixed":
+					c["affects"]["ranges"][0]["fixed"] = i["value"]
+				else:
+					raise Exception("Unknown kernel note")
+
+		else:
+			# We're not looking at kernel issues
+			c["affects"] = {
+				"versions": [
+					issue_data["product_version"]
+				]
+			}
+			c["references"] = []
+			for i in issue_data["references"]:
+				c["references"].append({"type": "WEB", "url": i})
+
+		c["modified"] = the_time
+		c["published"] = the_time
+
+		return c
+
 	def get_dwf_json_format(self, dwf_id, issue_data):
+
+		# We made a mistake of not properly namespacing this at the
+		# beginning. It will be fixed someday
+		c = {}
+		c["dwf"] = issue_data
+		c.update(self.get_mitre_json_format(dwf_id, issue_data))
+		# Consider this the first proper namespace
+		c["OSV"] = self.get_osv_json_format(dwf_id, issue_data)
+		return c
+
+	def get_mitre_json_format(self, dwf_id, issue_data):
 
 		# This data format is beyond terrible. Apologies if you found this. I am ashamed for the author of it.
 		# We will fix it someday, but not today. The initial goal is to be compatible
@@ -149,7 +265,6 @@ class DWFRepo:
 
 		# DWF namespace. We want this at the top because it's easy to read
 		# If there is any new data to add, do it here. The previous fields should be treated as legacy
-		c["dwf"] = issue_data
 
 
 		# metadata
