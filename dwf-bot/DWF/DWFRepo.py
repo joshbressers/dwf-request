@@ -92,6 +92,30 @@ class DWFRepo:
 	def close(self):
 		self.tmpdir.cleanup()
 
+	def get_id(self, the_id):
+		the_data = None
+		(year, id_only) = the_id.split('-')[1:3]
+		block_num = int(int(id_only)/1000)
+		block_path = "%dxxx" % block_num
+		id_path = os.path.join(self.tmpdir.name, year, block_path, the_id + ".json")
+		with open(id_path) as fh:
+			the_data = json.load(fh)
+		return the_data
+
+	def get_all_ids(self):
+
+		dwf_ids = []
+		for root,d_names,f_names in os.walk(self.tmpdir.name):
+			# Skip the .git directories
+			if '.git' in root:
+				continue
+
+			for i in f_names:
+				if 'CVE-' in i:
+					id_only = i.split('.')[0]
+					dwf_ids.append(id_only)
+		return dwf_ids
+
 	def get_next_dwf_path(self, approved_user = False):
 		# Returns the next DWF ID and the path where it should go
 		# This needs a lot more intelligence, but it'll be OK for the first pass. There are plenty of integers

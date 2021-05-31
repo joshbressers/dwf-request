@@ -9,7 +9,7 @@ import DWF
 class FakeIssue:
 
 	def __init__(self):
-		self.dwf = "CAN-1900-0001"
+		self.dwf = "CAN-1900-1000001"
 		self.id = 1
 		self.json = {
 			"vendor_name": "test vendor",
@@ -83,7 +83,22 @@ class TestDWFRepo(unittest.TestCase):
 	def testGetDWFJSON(self):
 		self.maxDiff = None
 		fake_issue = FakeIssue()
-		the_data = self.repo.get_dwf_json_format('CVE-1900-0001', fake_issue.get_dwf_json())
+		the_data = self.repo.get_dwf_json_format('CVE-1900-1000001', fake_issue.get_dwf_json())
 		for i in fake_issue.get_dwf_json().keys():
 			# Let's just check the keys
 			self.assertTrue(i in the_data['dwf'])
+
+	def testGetAllIDs(self):
+		the_ids = self.repo.get_all_ids()
+		# Because we use a real repo, this number will change, so let's
+		# just look for some things we know exist
+		self.assertTrue("CVE-2021-1000000" in the_ids)
+		self.assertTrue("CVE-2021-1000010" in the_ids)
+		self.assertTrue("CVE-2021-1000100" in the_ids)
+		self.assertTrue("CVE-2021-1000400" in the_ids)
+
+	def testGetID(self):
+		fake_issue = FakeIssue()
+		the_id = self.repo.add_dwf(fake_issue)
+		id_info = self.repo.get_id(the_id)
+		self.assertEqual(id_info["OSV"]["id"], the_id)
