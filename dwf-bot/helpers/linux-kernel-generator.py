@@ -49,7 +49,7 @@ def main():
 
         # Verify some things
         check_commit = repo.commit(introduced_hash)
-        check_version = re.search(r'(v[0-9a-z.-]+)\~', check_commit.name_rev)
+        check_version = re.search(r'(v[0-9a-z.-]+)[\~\^]', check_commit.name_rev)
         if introduced_version not in check_version.groups()[0]:
             print("There is an introduced version mismatch")
             print(introduced_version)
