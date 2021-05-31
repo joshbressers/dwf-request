@@ -102,3 +102,14 @@ class TestDWFRepo(unittest.TestCase):
 		the_id = self.repo.add_dwf(fake_issue)
 		id_info = self.repo.get_id(the_id)
 		self.assertEqual(id_info["OSV"]["id"], the_id)
+
+	def testUpdateID(self):
+		fake_issue = FakeIssue()
+		the_id = self.repo.add_dwf(fake_issue)
+		id_info = self.repo.get_id(the_id)
+		self.assertEqual(id_info["OSV"]["id"], the_id)
+		id_info["OSV"]["id"] = "CVE-1801-01"
+		self.repo.update_id(the_id, id_info)
+
+		id_info = self.repo.get_id(the_id)
+		self.assertEqual(id_info["OSV"]["id"], "CVE-1801-01")

@@ -20,6 +20,21 @@ class DWFRepo:
 			user="%s:%s" % (user_name, user_id)
 		return user in self.allowed_users
 
+	def update_id(self, the_id, the_data):
+
+		# If we get a CAN, we want a CVE filename
+		if 'CAN' in the_id:
+			the_id = the_id.replace("CAN", "CVE")
+
+		the_filename = self.get_file(the_id)
+
+		dwf_json = json.dumps(the_data, indent=2)
+		dwf_json = dwf_json + "\n"
+		# save the json
+		with open(the_filename, 'w') as json_file:
+			json_file.write(dwf_json)
+		self.repo.index.add(the_filename)
+
 	def can_to_dwf(self, dwf_issue):
 
 		can_id = dwf_issue.get_dwf_id()
@@ -45,18 +60,19 @@ class DWFRepo:
 		# Swap the CAN to CVE
 		can_data['data_type'] = 'CVE'
 		can_data['CVE_data_meta']['ID'] = dwf_id
+		can_data['OSV']['id'] = dwf_id
 
-		dwf_json = json.dumps(can_data, indent=2)
-		dwf_json = dwf_json + "\n"
 		# save the json
-		with open(git_file, 'w') as json_file:
-			json_file.write(dwf_json)
+		self.update_id(dwf_id, can_data)
 
 		# Commit the file
 		self.repo.index.add(can_file)
 		self.repo.index.commit("Promoted to %s for #%s" % (dwf_id, dwf_issue.id))
 		self.push()
 		return dwf_id
+
+	def commit(self, message):
+		self.repo.index.commit(message)
 
 	def add_dwf(self, dwf_issue):
 
@@ -94,13 +110,17 @@ class DWFRepo:
 
 	def get_id(self, the_id):
 		the_data = None
+		id_path = self.get_file(the_id)
+		with open(id_path) as fh:
+			the_data = json.load(fh)
+		return the_data
+
+	def get_file(self, the_id):
 		(year, id_only) = the_id.split('-')[1:3]
 		block_num = int(int(id_only)/1000)
 		block_path = "%dxxx" % block_num
 		id_path = os.path.join(self.tmpdir.name, year, block_path, the_id + ".json")
-		with open(id_path) as fh:
-			the_data = json.load(fh)
-		return the_data
+		return id_path
 
 	def get_all_ids(self):
 
