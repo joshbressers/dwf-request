@@ -206,6 +206,7 @@ class DWFRepo:
 
 			# We are dealing with the kernel, skip references and use git
 			# commits in the affected section
+			c["package"]["ecosystem"] = "Linux"
 
 			c["affects"] = {
 				"ranges": [
