@@ -193,7 +193,15 @@ class DWFRepo:
 		c = {};
 
 		c["id"] = dwf_id
-		c["summary"] = issue_data["description"]
+
+
+		vuln_type = issue_data["vulnerability_type"]
+		name = issue_data["product_name"]
+		version = issue_data["product_version"]
+		summary = f"{vuln_type} in {name} version {version}"
+		c["summary"] = summary
+
+		c["details"] = issue_data["description"]
 		c["package"] = {
 			"name": issue_data["product_name"],
 			"ecosystem": "DWF"
@@ -203,6 +211,9 @@ class DWFRepo:
 		if issue_data["product_name"] == "Kernel" and \
 		   issue_data["vendor_name"] == "Linux" and \
 		   issue_data["impact"] == "unspecified":
+
+			# The kernel summary is special
+			c["summary"] = issue_data["description"].split('\n')[0]
 
 			# We are dealing with the kernel, skip references and use git
 			# commits in the affected section
