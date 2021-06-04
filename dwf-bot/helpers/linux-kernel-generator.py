@@ -47,14 +47,17 @@ def main():
         commit_message = commit.message
         commit_title = commit_message.splitlines()[0]
 
-        # Verify some things
-        check_commit = repo.commit(introduced_hash)
-        check_version = re.search(r'(v[0-9a-z.-]+)[\~\^]', check_commit.name_rev)
-        if introduced_version not in check_version.groups()[0]:
-            print("There is an introduced version mismatch")
-            print(introduced_version)
-            print(check_version.groups()[0])
-            sys.exit(1)
+
+        # The introduced data can be missing
+        if not introduced_hash == '' and not introduced_version == '':
+            # Verify some things
+            check_commit = repo.commit(introduced_hash)
+            check_version = re.search(r'(v[0-9a-z.-]+)[\~\^]', check_commit.name_rev)
+            if introduced_version not in check_version.groups()[0]:
+                print("There is an introduced version mismatch")
+                print(introduced_version)
+                print(check_version.groups()[0])
+                sys.exit(1)
 
         check_commit = repo.commit(fixed_hash)
         check_version = re.search(r'(v\d+\.\d+\.\d+)\~', check_commit.name_rev)
@@ -93,6 +96,11 @@ def main():
             "notes": "",
             "description": f"{commit_title}\n\nThis is an automated ID intended to aid in discovery of potential security vulnerabilities. The actual impact and attack plausibility have not yet been proven.\nThis ID is fixed in Linux Kernel version {fixed_version} by commit {fixed_hash}, it was introduced in version {introduced_version} by commit {introduced_hash}. For more details please see the references link."
         }
+
+        # We need to delete the introduced data if it's blank
+        if introduced_hash == '' and introduced_version == '':
+            del(json_data["references"][0])
+            del(json_data["extended_references"][0])
 
         json_output = json.dumps(json_data, indent=2)
 
